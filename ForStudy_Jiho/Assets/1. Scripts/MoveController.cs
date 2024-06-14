@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +9,13 @@ public class MoveController : PlayerStat
 
     
 
-    private void OnDrawGizmos() { if (showGroundCheck) { Debug.DrawLine(transform.position, transform.position + new Vector3(0, -groundCheckLength), colorGroundCheck); } }
+    private void OnDrawGizmos() 
+    { 
+        if (showGroundCheck)
+        {
+            Debug.DrawLine(transform.position, transform.position + new Vector3(0, -groundCheckLength), colorGroundCheck);
+        } 
+    }
 
     
 
@@ -16,9 +23,10 @@ public class MoveController : PlayerStat
     {
         checkGround();
         moving();
+        jump();
+        checkGravity();
+        doAnim();
     }
-
-
 
 
     /// <summary>
@@ -39,10 +47,61 @@ public class MoveController : PlayerStat
         moveDir.y = rigid.velocity.y;
 
         rigid.velocity = moveDir;
+    }
 
+    /// <summary>
+    /// 점프 작동 함수
+    /// </summary>
+    private void jump()
+    {
+        if (isGround == false)
+        {
+            return;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            isJump = true;
+        }
+    }
+
+    /// <summary>
+    /// 중력 제어
+    /// </summary>
+    private void checkGravity()
+    {
+        /*
+         * 여기에 버그 있음 점프 이상함
+         */
+        if (isGround == false)
+        {
+            verticalVelocity += Physics2D.gravity.y * Time.deltaTime;
+
+            if (verticalVelocity < -10)
+            {
+                verticalVelocity = -10;
+            }
+
+        }
+        else if (isJump == true)
+        {
+            isJump = false;
+            verticalVelocity = jumpForce;
+        }
+        else if (isGround == true)
+        {
+            verticalVelocity = 0;
+        }
+
+        rigid.velocity = new Vector2(rigid.velocity.x, verticalVelocity);
 
     }
 
+    private void doAnim()
+    {
+        anim.SetInteger("Horizontal", (int)moveDir.x);
+        anim.SetBool("IsGround", isGround);
+    }
 
 
 }

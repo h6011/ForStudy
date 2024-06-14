@@ -56,7 +56,10 @@ public class PlayerStat : MonoBehaviour
     /// ¶¥¿¡ ´ê¾Ò´ÂÁö ¿©ºÎ
     /// </summary>
     [SerializeField] protected bool isGround;
-
+    /// <summary>
+    /// isJump
+    /// </summary>
+    [SerializeField] protected bool isJump;
 
 
     /// <summary>
