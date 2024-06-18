@@ -38,11 +38,11 @@ public class PlayerStat : MonoBehaviour
 
 
 
-    [Header("플레이어 스탯")]
-
     /// <summary>
     /// 점프 강도
     /// </summary>
+    [Header("플레이어 스탯")]
+
     [SerializeField] protected float jumpForce;
     /// <summary>
     /// 이동 속도
@@ -67,6 +67,25 @@ public class PlayerStat : MonoBehaviour
     /// isJump
     /// </summary>
     [SerializeField] protected bool isJump;
+
+    /// <summary>
+    /// 벽에 닿았는지 아닌지 여부 확인
+    /// </summary>
+    [Header("벽점프 관련")]
+    [SerializeField] protected bool touchWall;
+    /// <summary>
+    /// isWallJump
+    /// </summary>
+    protected bool isWallJump;
+    /// <summary>
+    /// 벽점프 시간
+    /// </summary>
+    [SerializeField] protected float wallJumpTime = 0.3f;
+    /// <summary>
+    /// 벽점프 타이머
+    /// </summary>
+    protected float wallJumpTimer = 0.0f;
+
 
 
     /// <summary>

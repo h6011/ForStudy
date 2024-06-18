@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Animator))]
 public class MoveController : PlayerStat
 {
 
@@ -17,7 +19,28 @@ public class MoveController : PlayerStat
         } 
     }
 
-    
+    public void TriggerEnter(HitBox.ehitboxType _type, Collider2D _collision)
+    {
+        if (_type == HitBox.ehitboxType.WallCheck)
+        {
+            if (_collision.gameObject.layer == LayerMask.NameToLayer("Wall"))
+            {
+                touchWall = true;
+            }
+        }
+    }
+
+    public void TriggerExit(HitBox.ehitboxType _type, Collider2D _collision)
+    {
+        if (_type == HitBox.ehitboxType.WallCheck)
+        {
+            if (_collision.gameObject.layer == LayerMask.NameToLayer("Wall"))
+            {
+                touchWall = false;
+            }
+        }
+    }
+
 
     private void Update()
     {
@@ -41,8 +64,6 @@ public class MoveController : PlayerStat
         RaycastHit2D hit = Physics2D.BoxCast(boxCollider2D.bounds.center, boxCollider2D.bounds.size, 0, Vector2.down, groundCheckLength, groundCheckLayerint);
         if (hit) { isGround = true; } else { isGround = false; }
 
-
-
     }
 
     /// <summary>
@@ -61,8 +82,17 @@ public class MoveController : PlayerStat
     /// </summary>
     private void jump()
     {
+        /* 메모 1 
+         * 공중에 있는 상태 라면
+         * 벽에 붙어 있고, 그리고 벽을 향해 플레이어가 방향키를 누르고 있다면
+         */
         if (isGround == false)
         {
+            if (touchWall && moveDir.x != 0f && Input.GetKeyDown(KeyCode.Space))
+            {
+                isWallJump = true;
+            }
+
             return;
         }
 
@@ -80,6 +110,20 @@ public class MoveController : PlayerStat
         /*
          * 여기에 버그 있음 점프 이상함
          */
+
+        if (isWallJump == true)
+        {
+            isWallJump = false;
+
+            Vector2 dir = rigid.velocity;
+            dir.x *= -1f; // 반대방향 으로 만들어줌
+            rigid.velocity = dir;
+
+            verticalVelocity = jumpForce * 0.5f;
+            // 일정 시간 유저가 입력할수 없어야 벽을 발로찬 x값을 볼수 있음
+            // 입력 불가 타이머를 작동 시켜야함
+        }
+
         if (isGround == false)
         {
             verticalVelocity += Physics2D.gravity.y * Time.deltaTime;
