@@ -7,17 +7,13 @@ using UnityEngine;
 [RequireComponent(typeof(Animator))]
 public class MoveController : PlayerStat
 {
-
-
-    
-
-    private void OnDrawGizmos() 
-    { 
-        if (showGroundCheck)
-        {
-            Debug.DrawLine(transform.position, transform.position + new Vector3(0, -groundCheckLength), colorGroundCheck);
-        } 
-    }
+    //private void OnDrawGizmos() 
+    //{ 
+    //    if (showGroundCheck)
+    //    {
+    //        Debug.DrawLine(transform.position, transform.position + new Vector3(0, -groundCheckLength), colorGroundCheck);
+    //    } 
+    //}
 
     public void TriggerEnter(HitBox.ehitboxType _type, Collider2D _collision)
     {
@@ -44,12 +40,63 @@ public class MoveController : PlayerStat
 
     private void Update()
     {
+        checkTimer();
         checkGround();
+
         moving();
         jump();
+        dash();
+
         checkGravity();
         doAnim();
+
         rotatePlayerByMouse();
+    }
+
+    
+
+    private bool isPlayerWatchingLeft()
+    {
+        if (transform.localScale.x > 0) { return true; }
+        else { return false; }
+    }
+
+
+    private void dash()
+    {
+        bool isPressedDashKeyBool = isPressedDashKey();
+
+        if (dashTimer == 0.0f && isPressedDashKeyBool)
+        {
+            dashTimer = dashTime;
+            verticalVelocity = 0;
+
+            if (isPlayerWatchingLeft())
+            {
+                rigid.velocity = new Vector2(-dashSpeed, verticalVelocity);
+            }
+            else
+            {
+                rigid.velocity = new Vector2(dashSpeed, verticalVelocity);
+            }
+
+        }
+    }
+
+    private void checkTimer()
+    {
+        if (wallJumpTimer > 0.0f)
+        {
+            wallJumpTimer -= Time.deltaTime;
+            if (wallJumpTimer < 0) { wallJumpTimer = 0; }
+        }
+
+        if (dashTimer > 0f)
+        {
+            dashTimer -= Time.deltaTime;
+            if (dashTimer < 0) { dashTimer = 0; }
+        }
+
     }
 
 
@@ -71,6 +118,11 @@ public class MoveController : PlayerStat
     /// </summary>
     private void moving()
     {
+        if (wallJumpTimer > 0.0f || dashTimer > 0.0f)
+        {
+            return;
+        }
+
         moveDir.x = Input.GetAxisRaw("Horizontal") * moveSpeed;
         moveDir.y = rigid.velocity.y;
 
@@ -110,6 +162,10 @@ public class MoveController : PlayerStat
         /*
          * 여기에 버그 있음 점프 이상함
          */
+        if (dashTimer > 0.0f)
+        {
+            return;
+        }
 
         if (isWallJump == true)
         {
@@ -122,6 +178,7 @@ public class MoveController : PlayerStat
             verticalVelocity = jumpForce * 0.5f;
             // 일정 시간 유저가 입력할수 없어야 벽을 발로찬 x값을 볼수 있음
             // 입력 불가 타이머를 작동 시켜야함
+            wallJumpTimer = wallJumpTime;
         }
 
         if (isGround == false)
@@ -151,7 +208,7 @@ public class MoveController : PlayerStat
     }
     private void rotatePlayerByMouse()
     {
-        Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 mouseWorldPos = camMain.ScreenToWorldPoint(Input.mousePosition);
         Vector2 playerPos = transform.position;
         Vector2 fixedPos = mouseWorldPos - playerPos;
 
