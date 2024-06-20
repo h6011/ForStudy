@@ -1,14 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerStat : MonoBehaviour
 {
-    [Header("Vars")]
+    [Header("In Vars")]
     [SerializeField] protected Rigidbody2D rigid;
     [SerializeField] protected CapsuleCollider2D coll;
     [SerializeField] protected BoxCollider2D boxCollider2D;
     [SerializeField] protected Animator anim;
+    [SerializeField] protected TrailRenderer trailRenderer;
+
+    [Header("대쉬 UI 관련")]
+    [SerializeField] protected GameObject objectdashCoolTime;
+    [SerializeField] protected Image imgFill;
+    [SerializeField] protected TMP_Text TextCoolTime;
+
     protected Camera camMain;
 
     protected int groundCheckLayerint;
@@ -31,11 +40,16 @@ public class PlayerStat : MonoBehaviour
         rigid = GetComponent<Rigidbody2D>();
         coll = GetComponent<CapsuleCollider2D>();
         boxCollider2D = GetComponent<BoxCollider2D>();
+        trailRenderer = GetComponent<TrailRenderer>();
+
         camMain = Camera.main;
 
         anim = GetComponent<Animator>();
 
         groundCheckLayerint = LayerMask.GetMask("Wall", "Ground");
+
+
+        trailRenderer.enabled = false;
     }
 
 
@@ -106,6 +120,14 @@ public class PlayerStat : MonoBehaviour
     /// 대쉬 스피드 (강도)
     /// </summary>
     protected float dashSpeed = 20.0f;
+
+    [SerializeField] protected float dashCoolTimeTime = 1.5f;
+    /// <summary>
+    /// 대쉬 타이머
+    /// </summary>
+    protected float dashCoolTimeTimer = 0.0f;
+
+
     /// <summary>
     /// 대쉬 키들
     /// </summary>

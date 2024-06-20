@@ -51,9 +51,12 @@ public class MoveController : PlayerStat
         doAnim();
 
         rotatePlayerByMouse();
+
+        dashCoolTimeUIHandler();
     }
 
-    
+   
+
 
     private bool isPlayerWatchingLeft()
     {
@@ -66,10 +69,12 @@ public class MoveController : PlayerStat
     {
         bool isPressedDashKeyBool = isPressedDashKey();
 
-        if (dashTimer == 0.0f && isPressedDashKeyBool)
+        if (dashTimer == 0.0f && dashCoolTimeTimer == 0.0f && isPressedDashKeyBool)
         {
             dashTimer = dashTime;
+            dashCoolTimeTimer = dashCoolTimeTime;
             verticalVelocity = 0;
+            trailRenderer.enabled = true;
 
             if (isPlayerWatchingLeft())
             {
@@ -83,6 +88,11 @@ public class MoveController : PlayerStat
         }
     }
 
+    private void dashCoolTimeUIHandler()
+    {
+
+    }
+
     private void checkTimer()
     {
         if (wallJumpTimer > 0.0f)
@@ -94,7 +104,30 @@ public class MoveController : PlayerStat
         if (dashTimer > 0f)
         {
             dashTimer -= Time.deltaTime;
-            if (dashTimer < 0) { dashTimer = 0; }
+            if (dashTimer < 0) { dashTimer = 0; trailRenderer.enabled = false; }
+        }
+
+        if (dashCoolTimeTimer > 0f)
+        {
+            if (objectdashCoolTime.activeSelf == false)
+            {
+                objectdashCoolTime.SetActive(true);
+            }
+
+            dashCoolTimeTimer -= Time.deltaTime;
+            if (dashCoolTimeTimer < 0)
+            {
+                dashCoolTimeTimer = 0;
+            }
+            imgFill.fillAmount = 1 - dashCoolTimeTimer / dashCoolTimeTime;
+            TextCoolTime.text = dashCoolTimeTimer.ToString("F2");
+        }
+        else
+        {
+            if (objectdashCoolTime.activeSelf == true)
+            {
+                objectdashCoolTime.SetActive(false);
+            }
         }
 
     }
