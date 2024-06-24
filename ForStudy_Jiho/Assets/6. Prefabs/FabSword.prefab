@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 624885639448693564}
   - component: {fileID: 2489894392355611532}
   - component: {fileID: 390896551366694102}
-  m_Layer: 0
-  m_Name: Sword_02
+  m_Layer: 8
+  m_Name: FabSword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -158,7 +158,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.743205}
+  m_Offset: {x: -0.0022377372, y: 0.9356518}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.1}
@@ -169,5 +169,5 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.57699996, y: 1.8580126}
+  m_Size: {x: 0.36671233, y: 1.3209517}
   m_EdgeRadius: 0

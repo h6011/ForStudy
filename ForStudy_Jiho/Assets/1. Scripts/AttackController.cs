@@ -8,6 +8,10 @@ public class AttackController : MonoBehaviour
     [SerializeField] Transform trsHand;
     [SerializeField] GameObject objThrowWeapon;
     [SerializeField] Transform trsWeapon;
+    [SerializeField] Transform trsDynamic;
+
+    [SerializeField] Vector2 throwForce = new Vector2(10f, 0f); 
+
 
     private void Start()
     {
@@ -17,12 +21,18 @@ public class AttackController : MonoBehaviour
     private void Update()
     {
         checkAim();
+        checkCreate();
     }
 
     private bool isPlayerWatchingLeft()
     {
         if (transform.localScale.x > 0) { return true; }
         else { return false; }
+    }
+
+    private float GetrWatchingLeftAxisRaw()
+    {
+        return transform.localScale.x;
     }
 
     private void checkAim()
@@ -33,7 +43,7 @@ public class AttackController : MonoBehaviour
 
 
 
-        float angle = Quaternion.FromToRotation(Vector3.left * transform.localScale.x, fixedPos).eulerAngles.z;
+        float angle = Quaternion.FromToRotation(Vector3.left * GetrWatchingLeftAxisRaw(), fixedPos).eulerAngles.z;
         trsHand.rotation = Quaternion.Euler(0, 0, angle);
 
     }
@@ -48,7 +58,11 @@ public class AttackController : MonoBehaviour
 
     private void createWeapon()
     {
-        GameObject go = Instantiate(objThrowWeapon);
+        GameObject go = Instantiate(objThrowWeapon, trsWeapon.position, trsWeapon.rotation, trsDynamic);
+        ThrowWeapon goSc = go.GetComponent<ThrowWeapon>();
+        bool isRight = GetrWatchingLeftAxisRaw() < 0;
+        goSc.SetForce(trsWeapon.rotation * throwForce * -GetrWatchingLeftAxisRaw(), isRight);
+
     }
 
 
