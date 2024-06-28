@@ -24,17 +24,12 @@ public class JsonManager : MonoBehaviour
         itemDatas = JsonConvert.DeserializeObject<List<cItemData>>(itemData.ToString());
     }
 
-    public string GetNameFromIdx(string _Idx)
+    public string GetSpriteNameFromIdx(string _Idx)
     {
-        // 
-
         if (itemDatas == null) { return string.Empty; }
 
-
-        return itemDatas.Find(x => x.idx == _Idx).idx; 
+        return itemDatas.Find(x => x.idx == _Idx).sprite; 
     }
-
-
 
 
 

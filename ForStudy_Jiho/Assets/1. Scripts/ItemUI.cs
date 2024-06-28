@@ -14,17 +14,25 @@ public class ItemUI : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHa
     private Transform beforeParent; // 혹시 잘못된 위치에 드롭 하게되면 돌아오게 만들 위치
 
     private CanvasGroup canvasGroup; // 자식들을 통합 관리하는 컴포넌트
+    private Image imgItem;
+    [SerializeField] private string idx;
 
-
+    public Transform BeforeParent => beforeParent;
 
     private void Awake()
     {
-        canvasGroup = GetComponent<CanvasGroup>();
+        initVars();
     }
 
     private void Start()
     {
         canvas = InventoryManager.Instance.CanvasInventory;
+    }
+
+    public void initVars()
+    {
+        if(canvasGroup == null) { canvasGroup = GetComponent<CanvasGroup>(); }
+        if(imgItem == null) { imgItem = GetComponent<Image>(); }
     }
 
     /// <summary>
@@ -34,6 +42,12 @@ public class ItemUI : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHa
     /// <param name="_idx">아이템의 인덱스 넘버</param>
     public void SetItem(string _idx)
     {
+        idx = _idx;
+        string spriteName = JsonManager.Instance.GetSpriteNameFromIdx(_idx);
+        Sprite sprite = SpriteManager.Instance.GetSprite(spriteName);
+
+        initVars();
+        imgItem.sprite = sprite;
 
     }
 

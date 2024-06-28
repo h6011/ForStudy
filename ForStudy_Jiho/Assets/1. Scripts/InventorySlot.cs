@@ -49,9 +49,30 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         if (eventData.pointerDrag != null)
         {
-            Transform trsPointerDrag = eventData.pointerDrag.transform;
-            trsPointerDrag.SetParent(transform);
-            trsPointerDrag.position = rect.position;
+            if (transform.childCount == 0)
+            {
+                Transform trsPointerDrag = eventData.pointerDrag.transform;
+                trsPointerDrag.SetParent(transform);
+                trsPointerDrag.position = rect.position;
+            }
+            else if (transform.childCount == 1) 
+            {
+                Transform OldItem = transform.GetChild(0);
+
+                Transform trsHolding = eventData.pointerDrag.transform;
+                ItemUI itemUI = trsHolding.GetComponent<ItemUI>();
+                Transform BeforeParent = itemUI.BeforeParent;
+
+                trsHolding.SetParent(transform);
+                trsHolding.position = rect.position;
+                
+                RectTransform OldItemRect = BeforeParent.GetComponent<RectTransform>();
+                OldItem.SetParent(BeforeParent);
+                OldItem.position = OldItemRect.position;
+
+
+                
+            }
         }
     }
 
